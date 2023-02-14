@@ -1,3 +1,4 @@
+---
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -5,7 +6,7 @@ metadata:
   labels:
     type: local
 spec:
-  storageClassName: hostPath
+  storageClassName: microk8s-hostpath
   capacity:
     storage: 20Gi
   accessModes:
@@ -18,7 +19,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: mvn-pv-claim
 spec:
-  storageClassName: hostPath
+  storageClassName: microk8s-hostpath
   accessModes:
     - ReadWriteOnce
   resources:

@@ -5,7 +5,7 @@ metadata:
   labels:
     type: local
 spec:
-  storageClassName: hostPath
+  storageClassName: microk8s-hostpath
   capacity:
     storage: 20Gi
   accessModes:
@@ -18,7 +18,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: jenkins-pv-claim
 spec:
-  storageClassName: hostPath
+  storageClassName: microk8s-hostpath
   accessModes:
     - ReadWriteOnce
   resources:
