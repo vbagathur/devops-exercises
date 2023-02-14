@@ -20,7 +20,12 @@ spec:
         volumeMounts:
         - name: jenkins-pv-volume
           mountPath: /var/jenkins_home
+        - name: mvn-pv-volume
+          mountPath: /root/.m2/repository
       volumes:
       - name: jenkins-pv-volume
         persistentVolumeClaim:
           claim-name: jenkins-pv-claim
+      - name: mvn-pv-volume
+        persistentVolumeClaim:
+          claim-name: mvn-pv-claim
