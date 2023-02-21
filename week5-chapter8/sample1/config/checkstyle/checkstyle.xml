@@ -9,4 +9,5 @@
                <property name="scope" value="public"/>
           </module>
      </module>
+     <module name="ConstantName"/>
 </module>
