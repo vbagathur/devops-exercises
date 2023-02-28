@@ -22,7 +22,7 @@ pipeline {
                          sh "./gradlew jacocoTestCoverageVerification"
                     } else {
                          echo "Skipping code coverage for non-main branches"
-                    }
+                    } 
                }
           }
           stage("Static code analysis") {
