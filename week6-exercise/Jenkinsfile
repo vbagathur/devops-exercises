@@ -24,13 +24,11 @@ podTemplate(containers: [
 	          sh 'printenv'
             echo "My CC branch is: ${env.BRANCH_NAME}"
             if (env.BRANCH_NAME == "feature-week6") {
-                    sh '''
-                    echo Running code coverage only in the ${env.BRANCH_NAME} branch
-                    cd week6-exercise
-                    chmod +x ./gradlew
-                    ./gradlew jacocoTestReport
-                    ./gradlew jacocoTestCoverageVerification
-                    '''
+                    sh 'echo Running code coverage only in the ${env.BRANCH_NAME} branch'
+                    sh 'cd week6-exercise'
+                    sh 'chmod +x ./gradlew'
+                    sh './gradlew jacocoTestReport'
+                    sh './gradlew jacocoTestCoverageVerification'
                }
           }
           stage("Static code analysis") {
