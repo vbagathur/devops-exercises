@@ -28,7 +28,6 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'com.hazelcast:hazelcast-all:3.12'
-    implementation platform('org.springframework.boot:spring-boot-dependencies:2.1.0.RELEASE')
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation("io.cucumber:cucumber-java:4.2.6")
