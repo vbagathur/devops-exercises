@@ -14,14 +14,15 @@ pipeline {
                     sh "./gradlew test"
                }
           }
-          if (env.BRANCH_NAME == "main") {
-               stage("Code coverage") {
-                    steps {
-                              echo "Running code coverage only in the main branch"
-                              sh "./gradlew jacocoTestReport"
-                              sh "./gradlew jacocoTestCoverageVerification"
-                         }
-               }
+          stage("Code coverage") {
+               steps {
+                    if (env.BRANCH_NAME == "main") {
+                         echo "Running code coverage only in the main branch"
+                         sh "./gradlew jacocoTestReport"
+                         sh "./gradlew jacocoTestCoverageVerification"
+                    } else {
+                         echo "Skipping code coverage for non-main branches"
+                    }
           }
           stage("Static code analysis") {
                steps {
