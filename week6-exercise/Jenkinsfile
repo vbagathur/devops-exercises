@@ -23,7 +23,7 @@ podTemplate(containers: [
                stage('Code coverage') {
                     sh 'printenv'
                     echo "My CC branch is: ${env.BRANCH_NAME}"
-                    if (env.BRANCH_NAME == "feature-week6") {
+                    if (env.BRANCH_NAME == "main") {
                          sh "echo Running code coverage only in the ${env.BRANCH_NAME} branch"
                          sh '''
                          cd week6-exercise
