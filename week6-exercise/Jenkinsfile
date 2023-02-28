@@ -1,56 +1,32 @@
-pipeline {
-     agent any
-     stages {
+podTemplate(containers: [
+  containerTemplate(
+    name: 'gradle',
+    image: 'gradle:6.3-jdk14',
+    command: 'sleep',
+    args: '30d'
+    ),
+  ]) {
+    node(POD_LABEL) {
+      stage('Run pipeline against a gradle project - test MAIN') {
+	      container('gradle') {
+          stage('Build a gradle project') {
+            echo "I am the ${env.BRANCH_NAME} branch"
+          }
           stage("Compile") {
-               steps {
-                    sh '''
-                    cd week6-exercise
-                    chmod +x ./gradlew
-                    ./gradlew compileJava
-                    '''
-               }
+            sh '''
+            cd week6-exercise
+            chmod +x ./gradlew
+            ./gradlew compileJava
+            '''
           }
-          stage("Unit test") {
-               steps {
-                    sh '''
-                    cd week6-exercise
-                    ./gradlew test
-                    '''
-               }
+          stage('Code coverage') {
+	          sh 'printenv'
+            echo "My CC branch is: ${env.CHANGE_BRANCH}"
+            if (env.BRANCH_NAME == "feature") {
+              echo "I am the ${env.BRANCH_NAME} branch"
+            }
           }
-          stage("Code coverage") {
-               steps {
-                    sh '''
-                    if (env.BRANCH_NAME == "feature")
-                    then
-                         echo "Running code coverage only in the main branch"
-                         cd week6-exercise
-                         chmod +x ./gradlew
-                         ./gradlew jacocoTestReport
-                         ./gradlew jacocoTestCoverageVerification
-                    else
-                         echo "Skipping code coverage only in the main branch"
-                    fi
-                    '''
-               }
-          }
-          stage("Static code analysis") {
-               steps {
-                    sh '''
-                    cd week6-exercise
-                    chmod +x ./gradlew
-                    ./gradlew checkstyleMain
-                    '''
-               }
-          }
-          stage("Package") {
-               steps {
-                    sh '''
-                    cd week6-exercise
-                    chmod +x ./gradlew
-                    ./gradlew build                    
-                    '''
-               }
-          }
-     }
+        }
+      }   
+    }
 }
