@@ -23,6 +23,7 @@ pipeline {
                     } else {
                          echo "Skipping code coverage for non-main branches"
                     }
+               }
           }
           stage("Static code analysis") {
                steps {
