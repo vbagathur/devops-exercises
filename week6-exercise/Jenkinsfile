@@ -24,15 +24,16 @@ pipeline {
           stage("Code coverage") {
                steps {
                     sh '''
-                    if (env.BRANCH_NAME == "feature") {
+                    if (env.BRANCH_NAME == "feature")
+                    then
                          echo "Running code coverage only in the main branch"
                          cd week6-exercise
                          chmod +x ./gradlew
                          ./gradlew jacocoTestReport
                          ./gradlew jacocoTestCoverageVerification
-                    } else {
+                    else
                          echo "Skipping code coverage only in the main branch"
-                    }
+                    fi
                     '''
                }
           }
