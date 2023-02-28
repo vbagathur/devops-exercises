@@ -20,25 +20,31 @@ pipeline {
           }
           stage("Code coverage") {
                steps {
-                    sh "echo 'Running code coverage only in the main branch'"
-                    sh "cd week6-exercise"
-                    sh "chmod +x ./gradlew"
-                    sh "./gradlew jacocoTestReport"
-                    sh "./gradlew jacocoTestCoverageVerification"
+                    sh '''
+                    echo 'Running code coverage only in the main branch'"
+                    cd week6-exercise"
+                    chmod +x ./gradlew"
+                    ./gradlew jacocoTestReport"
+                    ./gradlew jacocoTestCoverageVerification"
+                    '''
                }
           }
           stage("Static code analysis") {
                steps {
-                    sh "cd week6-exercise"
-                    sh "chmod +x ./gradlew"
-                    sh "./gradlew checkstyleMain"
+                    sh '''
+                    cd week6-exercise
+                    sh "chmod +x ./gradlew
+                    sh "./gradlew checkstyleMain
+                    '''
                }
           }
           stage("Package") {
                steps {
-                    sh "cd week6-exercise"
-                    sh "chmod +x ./gradlew"
-                    sh "./gradlew build"
+                    sh '''
+                    cd week6-exercise
+                    sh "chmod +x ./gradlew
+                    sh "./gradlew build                    
+                    '''
                }
           }
 
@@ -80,7 +86,11 @@ pipeline {
           stage("Acceptance test") {
                steps {
                     sleep 60
-                    sh "chmod +x acceptance-test.sh && ./acceptance-test.sh"
+                    sh '''
+                    cd week6-exercise
+                    chmod +x acceptance-test.sh
+                    ./acceptance-test.sh
+                    '''
                }
           }
 
@@ -93,9 +103,11 @@ pipeline {
           }
           stage("Smoke test") {
               steps {
-                  sleep 60
-                  sh "cd week6-exercise"
-                  sh "chmod +x smoke-test.sh && ./smoke-test.sh"
+                    sleep 60
+                    sh '''
+                    cd week6-exercise
+                    chmod +x smoke-test.sh && ./smoke-test.sh                    
+                    '''
               }
           }
      }
