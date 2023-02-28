@@ -8,11 +8,11 @@ podTemplate(containers: [
   ]) {
     node(POD_LABEL) {
       stage('Run pipeline against a gradle project - test MAIN') {
-        git branch:env.BRANCH_NAME, url:'https://github.com/vbagathur/devops-exercises' 
 	      container('gradle') {
           stage('Build a gradle project') {
             echo "I am the ${env.BRANCH_NAME} branch"
           }
+          git branch:env.BRANCH_NAME, url:'https://github.com/vbagathur/devops-exercises' 
           stage("Compile") {
             sh '''
             cd week6-exercise
@@ -20,6 +20,7 @@ podTemplate(containers: [
             ./gradlew compileJava
             '''
           }
+          git branch:env.BRANCH_NAME, url:'https://github.com/vbagathur/devops-exercises' 
           stage('Code coverage') {
 	          sh 'printenv'
             echo "My CC branch is: ${env.BRANCH_NAME}"
