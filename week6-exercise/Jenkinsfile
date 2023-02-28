@@ -7,7 +7,7 @@ pipeline {
           stage("Compile") {
                steps {
                     sh "cd week6-exercise"
-                    sh "chmod +x gradlew"
+                    sh "chmod +x ./gradlew"
                     sh "./gradlew compileJava"
                }
           }
@@ -20,7 +20,7 @@ pipeline {
                steps {
                     sh "echo 'Running code coverage only in the main branch'"
                     sh "cd week6-exercise"
-                    sh "chmod +x gradlew"
+                    sh "chmod +x ./gradlew"
                     sh "./gradlew jacocoTestReport"
                     sh "./gradlew jacocoTestCoverageVerification"
                }
@@ -28,14 +28,14 @@ pipeline {
           stage("Static code analysis") {
                steps {
                     sh "cd week6-exercise"
-                    sh "chmod +x gradlew"
+                    sh "chmod +x ./gradlew"
                     sh "./gradlew checkstyleMain"
                }
           }
           stage("Package") {
                steps {
                     sh "cd week6-exercise"
-                    sh "chmod +x gradlew"
+                    sh "chmod +x ./gradlew"
                     sh "./gradlew build"
                }
           }
