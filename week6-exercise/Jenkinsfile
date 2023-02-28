@@ -16,13 +16,9 @@ pipeline {
           }
           stage("Code coverage") {
                steps {
-                    if (env.BRANCH_NAME == "main") {
-                         echo "Running code coverage only in the main branch"
-                         sh "./gradlew jacocoTestReport"
-                         sh "./gradlew jacocoTestCoverageVerification"
-                    } else {
-                         echo "Skipping code coverage for non-main branches"
-                    } 
+                    echo "Running code coverage only in the main branch"
+                    sh "./gradlew jacocoTestReport"
+                    sh "./gradlew jacocoTestCoverageVerification"
                }
           }
           stage("Static code analysis") {
