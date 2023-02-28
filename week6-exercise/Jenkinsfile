@@ -15,7 +15,10 @@ pipeline {
           }
           stage("Unit test") {
                steps {
-                    sh "./gradlew test"
+                    sh '''
+                    cd week6-exercise
+                    ./gradlew test
+                    '''
                }
           }
           stage("Code coverage") {
