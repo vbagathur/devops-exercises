@@ -24,11 +24,11 @@ pipeline {
           stage("Code coverage") {
                steps {
                     sh '''
-                    echo 'Running code coverage only in the main branch'"
-                    cd week6-exercise"
-                    chmod +x ./gradlew"
-                    ./gradlew jacocoTestReport"
-                    ./gradlew jacocoTestCoverageVerification"
+                    echo "Running code coverage only in the main branch"
+                    cd week6-exercise
+                    chmod +x ./gradlew
+                    ./gradlew jacocoTestReport
+                    ./gradlew jacocoTestCoverageVerification
                     '''
                }
           }
@@ -36,8 +36,8 @@ pipeline {
                steps {
                     sh '''
                     cd week6-exercise
-                    sh "chmod +x ./gradlew
-                    sh "./gradlew checkstyleMain
+                    chmod +x ./gradlew
+                    ./gradlew checkstyleMain
                     '''
                }
           }
@@ -45,8 +45,8 @@ pipeline {
                steps {
                     sh '''
                     cd week6-exercise
-                    sh "chmod +x ./gradlew
-                    sh "./gradlew build                    
+                    chmod +x ./gradlew
+                    ./gradlew build                    
                     '''
                }
           }
@@ -109,7 +109,8 @@ pipeline {
                     sleep 60
                     sh '''
                     cd week6-exercise
-                    chmod +x smoke-test.sh && ./smoke-test.sh                    
+                    chmod +x smoke-test.sh
+                    ./smoke-test.sh                    
                     '''
               }
           }
