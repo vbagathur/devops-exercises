@@ -1,0 +1,53 @@
+podTemplate(containers: [
+  containerTemplate(
+    name: 'gradle',
+    image: 'gradle:6.3-jdk14',
+    command: 'sleep',
+    args: '30d'
+    ),
+  ]) {
+    node(POD_LABEL) {
+      stage('Run pipeline against a gradle project - test MAIN') {
+          git branch:env.BRANCH_NAME, url:'https://github.com/vbagathur/devops-exercises' 
+	     container('gradle') {
+               stage('Build a gradle project') {
+                    echo "I am the ${env.BRANCH_NAME} branch"
+               }
+               stage("Compile") {
+                    sh '''
+                    cd week6-exercise
+                    chmod +x ./gradlew
+                    ./gradlew compileJava
+                    '''
+               }
+               stage('Code coverage') {
+                    sh 'printenv'
+                    echo "My CC branch is: ${env.BRANCH_NAME}"
+                    if (env.BRANCH_NAME == "feature-week6") {
+                         sh "echo Running code coverage only in the ${env.BRANCH_NAME} branch"
+                         sh '''
+                         cd week6-exercise
+                         chmod +x ./gradlew
+                         ./gradlew jacocoTestReport
+                         ./gradlew jacocoTestCoverageVerification
+                         '''
+                    }
+               }
+               stage("Static code analysis") {
+                    sh '''
+                    cd week6-exercise
+                    chmod +x ./gradlew
+                    ./gradlew checkstyleMain
+                    '''
+               }
+               stage("Package") {
+                    sh '''
+                    cd week6-exercise
+                    chmod +x ./gradlew
+                    ./gradlew build                    
+                    '''
+               }
+        }
+      }   
+    }
+}
