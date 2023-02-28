@@ -22,10 +22,34 @@ podTemplate(containers: [
           }
           stage('Code coverage') {
 	          sh 'printenv'
-            echo "My CC branch is: ${env.CHANGE_BRANCH}"
-            if (env.BRANCH_NAME == "feature") {
-              echo "I am the ${env.BRANCH_NAME} branch"
-            }
+            echo "My CC branch is: ${env.BRANCH_NAME}"
+            if (env.BRANCH_NAME == "feature-week6") {
+                    sh '''
+                    echo "Running code coverage only in the ${env.BRANCH_NAME} branch"
+                    cd week6-exercise
+                    chmod +x ./gradlew
+                    ./gradlew jacocoTestReport
+                    ./gradlew jacocoTestCoverageVerification
+                    '''
+               }
+          }
+          stage("Static code analysis") {
+               steps {
+                    sh '''
+                    cd week6-exercise
+                    chmod +x ./gradlew
+                    ./gradlew checkstyleMain
+                    '''
+               }
+          }
+          stage("Package") {
+               steps {
+                    sh '''
+                    cd week6-exercise
+                    chmod +x ./gradlew
+                    ./gradlew build                    
+                    '''
+               }
           }
         }
       }   
