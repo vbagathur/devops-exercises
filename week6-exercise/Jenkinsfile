@@ -21,6 +21,10 @@ podTemplate(containers: [
                     '''
                }
                stage('Code coverage') {
+                    if (env.BRANCH_NAME == "playground") {
+                         sh "echo Skipping image build for playground branch"
+                         return;
+                    }              
                     if (env.BRANCH_NAME == "feature") {
                          sh "echo Skipping all tests for feature branch"
                          return
