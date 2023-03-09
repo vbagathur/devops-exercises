@@ -41,7 +41,7 @@ podTemplate(yaml: '''
     stage('Build a gradle project') {
       git branch:env.BRANCH_NAME, url:'https://github.com/vbagathur/devops-exercises'
       container('gradle') {
-        stage('Build a gradle project') {
+        stage('Build a gradle project - sub stage') {
           sh '''
           ls -al $WORKSPACE/
           cd $WORKSPACE/week6-exercise
@@ -59,7 +59,7 @@ podTemplate(yaml: '''
           return;
       }              
       container('kaniko') {
-        stage('Build a gradle project') {
+        stage('Build Java Image - sub stage') {
           if (env.BRANCH_NAME == "main") {
             script { 
               env.IMG_NAME = "calculator" 

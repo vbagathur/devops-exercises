@@ -21,8 +21,6 @@ podTemplate(containers: [
                     '''
                }
                stage('Code coverage') {
-                    sh 'printenv'
-                    echo "My CC branch is: ${env.BRANCH_NAME}"
                     if (env.BRANCH_NAME == "feature") {
                          sh "echo Skipping all tests for feature branch"
                          return
