@@ -65,12 +65,11 @@ podTemplate(yaml: '''
               env.IMG_NAME = "calculator" 
               env.IMG_VER = "1.0"
             }
-          } else {
-            if (env.BRANCH_NAME == "feature") {
-              script { 
-                env.IMG_NAME = "calculator-feature"
-                env.IMG_VER = "0.1"
-              }
+          } 
+          if (env.BRANCH_NAME == "feature") {
+            script { 
+              env.IMG_NAME = "calculator-feature"
+              env.IMG_VER = "0.1"
             }
           }
           sh '''
