@@ -54,8 +54,9 @@ podTemplate(yaml: '''
     }
 
     stage('Build Java Image') {
-      when {
-          not { branch 'playground' }
+      if (env.BRANCH_NAME == "playground") {
+          sh "echo Skipping image build for playground branch."
+          return;
       }              
       container('kaniko') {
         stage('Build a gradle project') {
