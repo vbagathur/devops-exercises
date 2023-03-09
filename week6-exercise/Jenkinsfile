@@ -23,6 +23,10 @@ podTemplate(containers: [
                stage('Code coverage') {
                     sh 'printenv'
                     echo "My CC branch is: ${env.BRANCH_NAME}"
+                    if (env.BRANCH_NAME == "feature") {
+                         sh "echo Skipping all tests for feature branch"
+                         return
+                    }
                     if (env.BRANCH_NAME == "main") {
                          sh "echo Running code coverage only in the ${env.BRANCH_NAME} branch"
                          sh '''
@@ -31,7 +35,9 @@ podTemplate(containers: [
                          ./gradlew jacocoTestReport
                          ./gradlew jacocoTestCoverageVerification
                          '''
-                    } 
+                    } else {
+                         sh "echo Skipping Code Coverage as it is only for main branch"
+                    }
                }
                stage("Static code analysis") {
                     sh '''
