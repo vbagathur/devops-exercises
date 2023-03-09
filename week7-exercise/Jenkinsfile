@@ -42,6 +42,9 @@ podTemplate(yaml: '''
       git branch:env.BRANCH_NAME, url:'https://github.com/vbagathur/devops-exercises'
       container('gradle') {
         stage('Build a gradle project') {
+          script { 
+            env.WORKSPACE = pwd()
+          }
           sh '''
           ls -al /home/jenkins/agent/workspace/${WORKSPACE}/
           cd /home/jenkins/agent/workspace/${WORKSPACE}/week6-exercise
@@ -49,7 +52,6 @@ podTemplate(yaml: '''
           ./gradlew build
           mv ./build/libs/calculator-0.0.1-SNAPSHOT.jar /mnt
           '''
-        }
       }
     }
 
@@ -61,14 +63,14 @@ podTemplate(yaml: '''
         stage('Build a gradle project') {
           if (env.BRANCH_NAME == "main") {
             script { 
-              env['IMG_NAME'] = "calculator" 
-              env['IMG_VER'] = "1.0"
+              env.IMG_NAME = "calculator" 
+              env.IMG_VER = "1.0"
             }
           } else {
             if (env.BRANCH_NAME == "feature") {
               script { 
-                env['IMG_NAME'] = "calculator-feature"
-                env['IMG_VER'] = "0.1"
+                env.IMG_NAME = "calculator-feature"
+                env.IMG_VER = "0.1"
               }
             }
           }
