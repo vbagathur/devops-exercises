@@ -41,7 +41,7 @@ podTemplate(yaml: '''
     stage('Build a gradle project') {
       git branch:env.BRANCH_NAME, url:'https://github.com/vbagathur/devops-exercises'
       container('gradle') {
-        stage('Build a gradle project') {
+        stage('Build a gradle project - sub stage') {
           sh '''
           ls -al $WORKSPACE/
           cd $WORKSPACE/week6-exercise
@@ -55,22 +55,21 @@ podTemplate(yaml: '''
 
     stage('Build Java Image') {
       if (env.BRANCH_NAME == "playground") {
-          sh "echo Skipping image build for playground branch."
+          sh "echo Skipping image build for playground branch"
           return;
       }              
       container('kaniko') {
-        stage('Build a gradle project') {
+        stage('Build Java Image - sub stage') {
           if (env.BRANCH_NAME == "main") {
             script { 
               env.IMG_NAME = "calculator" 
               env.IMG_VER = "1.0"
             }
-          } else {
-            if (env.BRANCH_NAME == "feature") {
-              script { 
-                env.IMG_NAME = "calculator-feature"
-                env.IMG_VER = "0.1"
-              }
+          } 
+          if (env.BRANCH_NAME == "feature") {
+            script { 
+              env.IMG_NAME = "calculator-feature"
+              env.IMG_VER = "0.1"
             }
           }
           sh '''
@@ -78,7 +77,7 @@ podTemplate(yaml: '''
           echo 'COPY ./calculator-0.0.1-SNAPSHOT.jar app.jar' >> Dockerfile
           echo 'ENTRYPOINT ["java", "-jar", "app.jar"]' >> Dockerfile
           mv /mnt/calculator-0.0.1-SNAPSHOT.jar .
-          /kaniko/executor --context `pwd` --destination evish/${env.IMG_NAME}:${env.IMG_VER}
+          /kaniko/executor --context `pwd` --destination evish/$IMG_NAME:$IMG_VER
           '''
         }
       }
