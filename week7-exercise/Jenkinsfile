@@ -77,7 +77,7 @@ podTemplate(yaml: '''
           echo 'COPY ./calculator-0.0.1-SNAPSHOT.jar app.jar' >> Dockerfile
           echo 'ENTRYPOINT ["java", "-jar", "app.jar"]' >> Dockerfile
           mv /mnt/calculator-0.0.1-SNAPSHOT.jar .
-          /kaniko/executor --context `pwd` --destination evish/${env.IMG_NAME}:${env.IMG_VER}
+          /kaniko/executor --context `pwd` --destination evish/$IMG_NAME:$IMG_VER
           '''
         }
       }
