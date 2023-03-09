@@ -42,18 +42,14 @@ podTemplate(yaml: '''
       git branch:env.BRANCH_NAME, url:'https://github.com/vbagathur/devops-exercises'
       container('gradle') {
         stage('Build a gradle project') {
-          script { 
-            env.WORKSPACE = pwd()
-          }
           sh '''
-          echo $PWD
-          echo $WORKSPACE
-          ls -al /home/jenkins/agent/workspace/${WORKSPACE}/
-          cd /home/jenkins/agent/workspace/${WORKSPACE}/week6-exercise
+          ls -al /home/jenkins/agent/workspace/week7-exercise_$BRANCH_NAME/
+          cd /home/jenkins/agent/workspace/week7-exercise_$BRANCH_NAME/week7-exercise
           chmod +x gradlew
           ./gradlew build
           mv ./build/libs/calculator-0.0.1-SNAPSHOT.jar /mnt
           '''
+        }
       }
     }
 
