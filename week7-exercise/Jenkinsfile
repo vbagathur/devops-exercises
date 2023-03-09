@@ -46,6 +46,8 @@ podTemplate(yaml: '''
             env.WORKSPACE = pwd()
           }
           sh '''
+          echo $PWD
+          echo $WORKSPACE
           ls -al /home/jenkins/agent/workspace/${WORKSPACE}/
           cd /home/jenkins/agent/workspace/${WORKSPACE}/week6-exercise
           chmod +x gradlew
