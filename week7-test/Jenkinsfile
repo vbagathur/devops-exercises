@@ -58,9 +58,11 @@ pipeline {
                when { not { branch 'playground' } }
                steps {
                     container('gradle') {
-                     sh "cd $WORKSPACE/week6-exercise"
-                     sh "chmod +x ./gradlew"
-                     sh "./gradlew test"
+                         sh '''
+                              cd $WORKSPACE/week6-exercise
+                              chmod +x ./gradlew
+                              ./gradlew test
+                         '''
                     }
                }
           }
