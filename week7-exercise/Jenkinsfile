@@ -46,7 +46,7 @@ podTemplate(yaml: '''
               if (env.BRANCH_NAME == "main") {
                     sh "echo Running code coverage only in the ${env.BRANCH_NAME} branch"
                     sh '''
-                    cd week6-exercise
+                    cd $workspace/week6-exercise
                     chmod +x ./gradlew
                     ./gradlew jacocoTestReport
                     ./gradlew jacocoTestCoverageVerification
