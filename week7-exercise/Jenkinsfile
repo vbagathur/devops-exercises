@@ -38,77 +38,30 @@ podTemplate(yaml: '''
               path: config.json
 ''') {
   node(POD_LABEL) {
+    stage('Build a gradle project') {
       git branch:env.BRANCH_NAME, url:'https://github.com/vbagathur/devops-exercises'
       container('gradle') {
-        //CODE COVERAGE STAGE FOR MAIN
-        if (env.BRANCH_NAME == "main") {
-          stage('Code coverage') {
-              if (env.BRANCH_NAME == "main") {
-                    sh "echo Running code coverage only in the ${env.BRANCH_NAME} branch"
-                    sh '''
-                    cd $WORKSPACE/week6-exercise
-                    chmod +x ./gradlew
-                    ./gradlew jacocoTestReport
-                    ./gradlew jacocoTestCoverageVerification
-                    '''
-              }
-          }
-        } else {
-            sh "echo Skipping Code Coverage as it is only for main branch"
-        }
-        //OTHER TESTING STAGES FOR MAIN AND FEATURE
-        if (env.BRANCH_NAME != "playground") {
-          stage("Static code analysis") {
-              sh '''
-              cd $WORKSPACE/week6-exercise
-              chmod +x ./gradlew
-              ./gradlew checkstyleMain
-              '''
-          }
-          stage("Package") {
-              sh '''
-              cd $WORKSPACE/week6-exercise
-              chmod +x ./gradlew
-              ./gradlew build                    
-              '''
-          }
-        } else {
-          sh "echo Skipping all tests for playground branch"
-        }
-        //BUILD JAR STAGE FOR ALL BRANCHES
-        stage('Build jar') {
+        stage('Build a gradle project') {
           sh '''
-          ls -al $WORKSPACE
-          cd $WORKSPACE/week6-exercise
+          ls -al /home/jenkins/agent/workspace/week7-lab_feature_week7lab/
+          cd /home/jenkins/agent/workspace/week7-lab_feature_week7lab/week6-exercise
           chmod +x gradlew
           ./gradlew build
           mv ./build/libs/calculator-0.0.1-SNAPSHOT.jar /mnt
           '''
         }
-        if (env.BRANCH_NAME == "playground") {
-          sh "echo Skipping image build for playground branch"
-          return;
-      }              
+      }
+    }
+
+    stage('Build Java Image') {
       container('kaniko') {
-        stage('Build Java Image') {
-          if (env.BRANCH_NAME == "main") {
-            script { 
-              env.IMG_NAME = "calculator" 
-              env.IMG_VER = "1.0"
-            }
-          } 
-          if (env.BRANCH_NAME == "feature") {
-            script { 
-              env.IMG_NAME = "calculator-feature"
-              env.IMG_VER = "0.1"
-            }
-          }
+        stage('Build a gradle project') {
           sh '''
           echo 'FROM openjdk:8-jre' > Dockerfile
           echo 'COPY ./calculator-0.0.1-SNAPSHOT.jar app.jar' >> Dockerfile
           echo 'ENTRYPOINT ["java", "-jar", "app.jar"]' >> Dockerfile
           mv /mnt/calculator-0.0.1-SNAPSHOT.jar .
-          /kaniko/executor --context `pwd` --destination evish/$IMG_NAME:$IMG_VER
+          /kaniko/executor --context `pwd` --destination evish/calculator:1.0
           '''
         }
       }
