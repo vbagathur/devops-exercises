@@ -7,7 +7,6 @@ pipeline {
      }
      stages {
           stage("Compile") {
-          {
                when {branch 'feature'}
                steps {
                     container('gradle') {
