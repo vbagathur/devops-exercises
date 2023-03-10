@@ -6,9 +6,9 @@ pipeline {
           pollSCM('* * * * *')
      }
      stages {
-          stage("Compile") 
-          when {branch = "feature"}
+          stage("Compile") {
           {
+               when {branch 'feature'}
                steps {
                     container('gradle') {
                          sh "echo Running code coverage only in the ${env.BRANCH_NAME} branch"
