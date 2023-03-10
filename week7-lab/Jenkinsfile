@@ -41,7 +41,43 @@ podTemplate(yaml: '''
     stage('Build a gradle project') {
       git branch:env.BRANCH_NAME, url:'https://github.com/vbagathur/devops-exercises'
       container('gradle') {
-        stage('Build a gradle project') {
+        //CODE COVERAGE STAGE FOR MAIN
+        if (env.BRANCH_NAME == "main") {
+          stage('Code coverage') {
+              if (env.BRANCH_NAME == "main") {
+                    sh "echo Running code coverage only in the ${env.BRANCH_NAME} branch"
+                    sh '''
+                    cd week6-exercise
+                    chmod +x ./gradlew
+                    ./gradlew jacocoTestReport
+                    ./gradlew jacocoTestCoverageVerification
+                    '''
+              }
+          }
+        } else {
+            sh "echo Skipping Code Coverage as it is only for main branch"
+        }
+        //OTHER TESTING STAGES FOR MAIN AND FEATURE
+        if (env.BRANCH_NAME != "playground") {
+          stage("Static code analysis") {
+              sh '''
+              cd week6-exercise
+              chmod +x ./gradlew
+              ./gradlew checkstyleMain
+              '''
+          }
+          stage("Package") {
+              sh '''
+              cd week6-exercise
+              chmod +x ./gradlew
+              ./gradlew build                    
+              '''
+          }
+        } else {
+          sh "echo Skipping all tests for playground branch"
+        }
+        //BUILD JAR STAGE FOR ALL BRANCHES
+        stage('Build jar') {
           sh '''
           ls -al /home/jenkins/agent/workspace/week7-lab_feature_week7lab/
           cd /home/jenkins/agent/workspace/week7-lab_feature_week7lab/week6-exercise
@@ -50,6 +86,10 @@ podTemplate(yaml: '''
           mv ./build/libs/calculator-0.0.1-SNAPSHOT.jar /mnt
           '''
         }
+        if (env.BRANCH_NAME == "playground") {
+          sh "echo Skipping image build for playground branch"
+          return;
+        }              
       }
     }
 
