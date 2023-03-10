@@ -46,7 +46,7 @@ podTemplate(yaml: '''
               if (env.BRANCH_NAME == "main") {
                     sh "echo Running code coverage only in the ${env.BRANCH_NAME} branch"
                     sh '''
-                    cd $workspace/week6-exercise
+                    cd $WORKSPACE/week6-exercise
                     chmod +x ./gradlew
                     ./gradlew jacocoTestReport
                     ./gradlew jacocoTestCoverageVerification
@@ -60,14 +60,14 @@ podTemplate(yaml: '''
         if (env.BRANCH_NAME != "playground") {
           stage("Static code analysis") {
               sh '''
-              cd $workspace/week6-exercise
+              cd $WORKSPACE/week6-exercise
               chmod +x ./gradlew
               ./gradlew checkstyleMain
               '''
           }
           stage("Package") {
               sh '''
-              cd $workspace/week6-exercise
+              cd $WORKSPACE/week6-exercise
               chmod +x ./gradlew
               ./gradlew build                    
               '''
@@ -78,8 +78,8 @@ podTemplate(yaml: '''
         //BUILD JAR STAGE FOR ALL BRANCHES
         stage('Build jar') {
           sh '''
-          ls -al $workspace
-          cd $workspace/week6-exercise
+          ls -al $WORKSPACE
+          cd $WORKSPACE/week6-exercise
           chmod +x gradlew
           ./gradlew build
           mv ./build/libs/calculator-0.0.1-SNAPSHOT.jar /mnt
