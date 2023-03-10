@@ -1,0 +1,118 @@
+
+
+podTemplate(yaml: '''
+    apiVersion: v1
+    kind: Pod
+    spec:
+      containers:
+      - name: gradle
+        image: gradle:6.3-jdk14
+        command:
+        - sleep
+        args:
+        - 99d
+        volumeMounts:
+        - name: shared-storage
+          mountPath: /mnt        
+      - name: kaniko
+        image: gcr.io/kaniko-project/executor:debug
+        command:
+        - sleep
+        args:
+        - 9999999
+        volumeMounts:
+        - name: shared-storage
+          mountPath: /mnt
+        - name: kaniko-secret
+          mountPath: /kaniko/.docker
+      restartPolicy: Never
+      volumes:
+      - name: shared-storage
+        persistentVolumeClaim:
+          claimName: jenkins-pv-claim
+      - name: kaniko-secret
+        secret:
+            secretName: dockercred
+            items:
+            - key: .dockerconfigjson
+              path: config.json
+''') {
+  node(POD_LABEL) {
+      git branch:env.BRANCH_NAME, url:'https://github.com/vbagathur/devops-exercises'
+      container('gradle') {
+        //CODE COVERAGE STAGE FOR MAIN
+        if (env.BRANCH_NAME == "main") {
+          stage('Code coverage') {
+              if (env.BRANCH_NAME == "main") {
+                    sh "echo Running code coverage only in the ${env.BRANCH_NAME} branch"
+                    sh '''
+                    cd $WORKSPACE/week6-exercise
+                    chmod +x ./gradlew
+                    ./gradlew jacocoTestReport
+                    ./gradlew jacocoTestCoverageVerification
+                    '''
+              }
+          }
+        } else {
+            sh "echo Skipping Code Coverage as it is only for main branch"
+        }
+        //OTHER TESTING STAGES FOR MAIN AND FEATURE
+        if (env.BRANCH_NAME != "playground") {
+          stage("Static code analysis") {
+              sh '''
+              cd $WORKSPACE/week6-exercise
+              chmod +x ./gradlew
+              ./gradlew checkstyleMain
+              '''
+          }
+          stage("Package") {
+              sh '''
+              cd $WORKSPACE/week6-exercise
+              chmod +x ./gradlew
+              ./gradlew build                    
+              '''
+          }
+        } else {
+          sh "echo Skipping all tests for playground branch"
+        }
+        //BUILD JAR STAGE FOR ALL BRANCHES
+        stage('Build jar') {
+          sh '''
+          ls -al $WORKSPACE
+          cd $WORKSPACE/week6-exercise
+          chmod +x gradlew
+          ./gradlew build
+          mv ./build/libs/calculator-0.0.1-SNAPSHOT.jar /mnt
+          '''
+        }
+        if (env.BRANCH_NAME == "playground") {
+          sh "echo Skipping image build for playground branch"
+          return;
+      }              
+      container('kaniko') {
+        stage('Build Java Image') {
+          if (env.BRANCH_NAME == "main") {
+            script { 
+              env.IMG_NAME = "calculator" 
+              env.IMG_VER = "1.0"
+            }
+          } 
+          if (env.BRANCH_NAME == "feature") {
+            script { 
+              env.IMG_NAME = "calculator-feature"
+              env.IMG_VER = "0.1"
+            }
+          }
+          sh '''
+          echo 'FROM openjdk:8-jre' > Dockerfile
+          echo 'COPY ./calculator-0.0.1-SNAPSHOT.jar app.jar' >> Dockerfile
+          echo 'ENTRYPOINT ["java", "-jar", "app.jar"]' >> Dockerfile
+          mv /mnt/calculator-0.0.1-SNAPSHOT.jar .
+          /kaniko/executor --context `pwd` --destination evish/$IMG_NAME:$IMG_VER
+          '''
+        }
+      }
+    }
+
+  }
+}

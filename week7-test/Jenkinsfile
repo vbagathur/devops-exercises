@@ -70,9 +70,11 @@ pipeline {
                when { not { branch 'playground' } }
                steps {
                     container('gradle') {
-                         sh "cd $WORKSPACE/week6-exercise"
-                         sh "./gradlew jacocoTestReport"
-                         sh "./gradlew jacocoTestCoverageVerification"
+                         sh '''
+                              cd $WORKSPACE/week6-exercise
+                              ./gradlew jacocoTestReport
+                              ./gradlew jacocoTestCoverageVerification
+                         '''
                     }
                }
           }
@@ -80,17 +82,21 @@ pipeline {
                when { not { branch 'playground' } }
                steps {
                     container('gradle') {
-                         sh "cd $WORKSPACE/week6-exercise"
-                         sh "./gradlew checkstyleMain"
+                         sh '''
+                              cd $WORKSPACE/week6-exercise
+                              ./gradlew checkstyleMain
+                         '''
                     }
                }
           }
           stage("Package") {
                steps {
                     container('gradle') {
-                         sh "cd $WORKSPACE/week6-exercise"
-                         sh "./gradlew build"
-                         sh "mv ./build/libs/calculator-0.0.1-SNAPSHOT.jar /mnt"
+                         sh '''
+                              cd $WORKSPACE/week6-exercise
+                              ./gradlew build
+                              mv ./build/libs/calculator-0.0.1-SNAPSHOT.jar /mnt
+                         '''
                     }
                }
           }
