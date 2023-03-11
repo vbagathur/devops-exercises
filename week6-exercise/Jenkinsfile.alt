@@ -1,0 +1,54 @@
+pipeline {
+     agent any
+     triggers {
+          pollSCM('* * * * *')
+     }
+     stages {
+          stage("Compile") {
+               steps {
+                    sh '''
+                    cd week6-exercise
+                    chmod +x ./gradlew
+                    ./gradlew compileJava
+                    '''
+               }
+          }
+          stage("Unit test") {
+               steps {
+                    sh '''
+                    cd week6-exercise
+                    ./gradlew test
+                    '''
+               }
+          }
+          stage("Code coverage") {
+               steps {
+                    sh '''
+                    echo "Running code coverage only in the main branch"
+                    cd week6-exercise
+                    chmod +x ./gradlew
+                    ./gradlew jacocoTestReport
+                    ./gradlew jacocoTestCoverageVerification
+                    '''
+               }
+          }
+          stage("Static code analysis") {
+               steps {
+                    sh '''
+                    cd week6-exercise
+                    chmod +x ./gradlew
+                    ./gradlew checkstyleMain
+                    '''
+               }
+          }
+          stage("Package") {
+               steps {
+                    sh '''
+                    cd week6-exercise
+                    chmod +x ./gradlew
+                    ./gradlew build                    
+                    '''
+               }
+          }
+     }
+}

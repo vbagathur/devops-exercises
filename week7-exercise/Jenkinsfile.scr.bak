@@ -38,7 +38,6 @@ podTemplate(yaml: '''
               path: config.json
 ''') {
   node(POD_LABEL) {
-    stages {
       git branch:env.BRANCH_NAME, url:'https://github.com/vbagathur/devops-exercises'
       container('gradle') {
         //CODE COVERAGE STAGE FOR MAIN
@@ -114,6 +113,6 @@ podTemplate(yaml: '''
         }
       }
     }
-   }
+
   }
 }
