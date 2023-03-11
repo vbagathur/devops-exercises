@@ -47,13 +47,13 @@ pipeline {
      }
      stages {
           stage("Compile") {
-               when {branch 'main'}
                steps {
                     container('gradle') {
                          sh "echo Running code coverage only in the ${env.BRANCH_NAME} branch"
                          sh '''
-                         cd $WORKSPACE/week6-exercise
-                         chmod +x ./gradlew
+                              cd $WORKSPACE/week6-exercise
+                              chmod +x ./gradlew
+                              ./gradlew compileJava
                          '''
                     }
                }
@@ -71,7 +71,7 @@ pipeline {
                }
           }
           stage("Code coverage") {
-               when { not { branch 'playground' } }
+               when { branch 'main' }
                steps {
                     container('gradle') {
                          sh '''
