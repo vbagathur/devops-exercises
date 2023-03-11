@@ -1,0 +1,156 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    cni.projectcalico.org/containerID: 84558c9cd8ac3ef88552228133efc8915c1c6b78cf1ae3623842f6457750fcbe
+    cni.projectcalico.org/podIP: 10.1.140.216/32
+    cni.projectcalico.org/podIPs: 10.1.140.216/32
+  creationTimestamp: "2023-02-10T14:11:42Z"
+  generateName: jenkins-7f995b8c8-
+  labels:
+    app: jenkins
+    pod-template-hash: 7f995b8c8
+  name: jenkins-7f995b8c8-5qhph
+  namespace: devops-tools
+  ownerReferences:
+  - apiVersion: apps/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: ReplicaSet
+    name: jenkins-7f995b8c8
+    uid: 58e6edde-32ee-442a-8046-ac11ebc1d266
+  resourceVersion: "99603"
+  uid: 3b0a6a39-e0ee-463b-b0a7-0546b35b850f
+spec:
+  containers:
+  - image: jenkins/jenkins:latest
+    imagePullPolicy: Always
+    livenessProbe:
+      failureThreshold: 3
+      httpGet:
+        path: /login
+        port: 8080
+        scheme: HTTP
+      initialDelaySeconds: 90
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 5
+    name: jenkins
+    ports:
+    - containerPort: 8080
+      name: httpport
+      protocol: TCP
+    - containerPort: 50000
+      name: jnlpport
+      protocol: TCP
+    readinessProbe:
+      failureThreshold: 3
+      httpGet:
+        path: /login
+        port: 8080
+        scheme: HTTP
+      initialDelaySeconds: 60
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 5
+    resources: {}
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/jenkins_home
+      name: jenkins-home
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-9qj5z
+    - mountPath: /root/.m2/repository
+      name: mvn-pv-volume
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  nodeName: ubuntu-bionic
+  preemptionPolicy: PreemptLowerPriority
+  priority: 0
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext:
+    fsGroup: 1000
+    runAsUser: 1000
+  serviceAccount: default
+  serviceAccountName: default
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  volumes:
+  - name: jenkins-home
+    persistentVolumeClaim:
+      claimName: jenkins-pv-claim
+  - name: mvn-pv-volume
+    persistentVolumeClaim:
+      claimName: mvn-pv-claim
+  - name: kube-api-access-9qj5z
+    projected:
+      defaultMode: 420
+      sources:
+      - serviceAccountToken:
+          expirationSeconds: 3607
+          path: token
+      - configMap:
+          items:
+          - key: ca.crt
+            path: ca.crt
+          name: kube-root-ca.crt
+      - downwardAPI:
+          items:
+          - fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+            path: namespace
+status:
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: "2023-02-10T14:11:42Z"
+    status: "True"
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: "2023-02-12T22:00:53Z"
+    status: "True"
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: "2023-02-12T22:00:53Z"
+    status: "True"
+    type: ContainersReady
+  - lastProbeTime: null
+    lastTransitionTime: "2023-02-10T14:11:42Z"
+    status: "True"
+    type: PodScheduled
+  containerStatuses:
+  - containerID: containerd://aa353c53cfba928f8de28bcd9a45c3d5491f3bb99e7312086b882a7d6a6ebb0a
+    image: docker.io/jenkins/jenkins:latest
+    imageID: docker.io/jenkins/jenkins@sha256:8656eb80548f7d9c7be5d1f4c367ef432f2dd62f81efa86795c9155258010d99
+    lastState:
+      terminated:
+        containerID: containerd://44a7cf340887f20e353e20c2aee1afaed678473132b5ebc04104249f5063a627
+        exitCode: 255
+        finishedAt: "2023-02-12T21:56:22Z"
+        reason: Unknown
+        startedAt: "2023-02-10T14:19:46Z"
+    name: jenkins
+    ready: true
+    restartCount: 1
+    started: true
+    state:
+      running:
+        startedAt: "2023-02-12T21:59:46Z"
+  hostIP: 10.0.2.15
+  phase: Running
+  podIP: 10.1.140.216
+  podIPs:
+  - ip: 10.1.140.216
+  qosClass: BestEffort
+  startTime: "2023-02-10T14:11:42Z"
