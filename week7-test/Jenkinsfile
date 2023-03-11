@@ -1,4 +1,8 @@
 pipeline {
+     environment {
+          IMG_NAME = "${env.BRANCH_NAME == 'main' ? 'calculator' : 'calculator-feature'}"
+          IMG_VER = "${env.BRANCH_NAME == 'main' ? '1.0' : '0.1'}"
+     }
      agent {
           kubernetes {
                inheritFrom 'mypod'
