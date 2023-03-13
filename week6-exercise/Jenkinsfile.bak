@@ -1,0 +1,61 @@
+podTemplate(containers: [
+  containerTemplate(
+    name: 'gradle',
+    image: 'gradle:6.3-jdk14',
+    command: 'sleep',
+    args: '30d'
+    ),
+  ]) {
+    node(POD_LABEL) {
+      stage('Run pipeline against a gradle project - test MAIN') {
+          git branch:env.BRANCH_NAME, url:'https://github.com/vbagathur/devops-exercises' 
+	     container('gradle') {
+               stage('Build a gradle project') {
+                    echo "I am the ${env.BRANCH_NAME} branch"
+               }
+               stage("Compile") {
+                    sh '''
+                    cd week6-exercise
+                    chmod +x ./gradlew
+                    ./gradlew compileJava
+                    '''
+               }
+               stage('Code coverage') {
+                    if (env.BRANCH_NAME == "playground") {
+                         sh "echo Skipping image build for playground branch"
+                         return;
+                    }              
+                    if (env.BRANCH_NAME == "feature") {
+                         sh "echo Skipping all tests for feature branch"
+                         return
+                    }
+                    if (env.BRANCH_NAME == "main") {
+                         sh "echo Running code coverage only in the ${env.BRANCH_NAME} branch"
+                         sh '''
+                         cd week6-exercise
+                         chmod +x ./gradlew
+                         ./gradlew jacocoTestReport
+                         ./gradlew jacocoTestCoverageVerification
+                         '''
+                    } else {
+                         sh "echo Skipping Code Coverage as it is only for main branch"
+                    }
+               }
+               stage("Static code analysis") {
+                    sh '''
+                    cd week6-exercise
+                    chmod +x ./gradlew
+                    ./gradlew checkstyleMain
+                    '''
+               }
+               stage("Package") {
+                    sh '''
+                    cd week6-exercise
+                    chmod +x ./gradlew
+                    ./gradlew build                    
+                    '''
+               }
+        }
+      }   
+    }
+}
