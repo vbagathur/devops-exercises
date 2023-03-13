@@ -53,7 +53,7 @@ pipeline {
                          sh '''
                               cd $WORKSPACE/week6-exercise
                               chmod +x ./gradlew
-                              ./gradlew compileJava
+                              ./gradlew compileJava1
                          '''
                     }
                }
